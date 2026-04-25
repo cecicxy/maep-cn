@@ -1,0 +1,82 @@
+{
+  "x402": {
+    "agent_identity": {
+      "trusted_party": "HTTP server",
+      "decentralized": false
+    },
+    "payment": {
+      "trusted_party": "Stablecoin issuer + server",
+      "decentralized": false
+    },
+    "result_verification": {
+      "trusted_party": "None (no verification)",
+      "decentralized": false
+    },
+    "dispute_resolution": {
+      "trusted_party": "None",
+      "decentralized": false
+    },
+    "trust_assumption_count": 3,
+    "notes": "Requires trust in: (1) server identity, (2) stablecoin issuer, (3) payment processor"
+  },
+  "google_a2a": {
+    "agent_identity": {
+      "trusted_party": "Google platform",
+      "decentralized": false
+    },
+    "payment": {
+      "trusted_party": "None (no native payment)",
+      "decentralized": false
+    },
+    "result_verification": {
+      "trusted_party": "None",
+      "decentralized": false
+    },
+    "dispute_resolution": {
+      "trusted_party": "Platform operator",
+      "decentralized": false
+    },
+    "trust_assumption_count": 2,
+    "notes": "Requires trust in: (1) Google platform, (2) platform operator for disputes"
+  },
+  "fetch_ai": {
+    "agent_identity": {
+      "trusted_party": "Fetch.ai network validators",
+      "decentralized": true
+    },
+    "payment": {
+      "trusted_party": "FET token + validators",
+      "decentralized": true
+    },
+    "result_verification": {
+      "trusted_party": "Fetch.ai network",
+      "decentralized": true
+    },
+    "dispute_resolution": {
+      "trusted_party": "Fetch.ai governance",
+      "decentralized": true
+    },
+    "trust_assumption_count": 2,
+    "notes": "Requires trust in: (1) validator set, (2) Fetch.ai governance \u2014 permissioned chain"
+  },
+  "maep_this_work": {
+    "agent_identity": {
+      "trusted_party": "Ethereum smart contract (public)",
+      "decentralized": true
+    },
+    "payment": {
+      "trusted_party": "Ethereum smart contract",
+      "decentralized": true
+    },
+    "result_verification": {
+      "trusted_party": "Ethereum smart contract",
+      "decentralized": true
+    },
+    "dispute_resolution": {
+      "trusted_party": "AuditorAgent (configurable)",
+      "decentralized": true
+    },
+    "trust_assumption_count": 1,
+    "notes": "Requires trust in: (1) Ethereum consensus \u2014 fully public, auditor is optional/replaceable"
+  }
+}

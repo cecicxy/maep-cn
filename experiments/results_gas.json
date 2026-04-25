@@ -1,0 +1,13 @@
+{
+  "gas_per_stage": {
+    "REGISTER": 138625,
+    "DELEGATE": 116489,
+    "EXECUTE": 93590,
+    "SETTLE": 62642
+  },
+  "contracts": {
+    "AgentRegistry": 1234274,
+    "PaymentChannel": 1161550,
+    "ResultAttestation": 516032
+  }
+}

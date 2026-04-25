@@ -39,12 +39,14 @@ contract AgentRegistry {
         uint256 stake = agents[msg.sender].stake;
         agents[msg.sender].active = false;
         agents[msg.sender].stake = 0;
-        payable(msg.sender).transfer(stake);
         emit AgentDeregistered(msg.sender);
+        (bool success, ) = payable(msg.sender).call{value: stake}("");
+        require(success, "Transfer failed");
     }
 
     function updateReputation(address agent, uint256 newReputation) external onlyOwner {
         require(agents[agent].active, "Agent not active");
+        require(newReputation <= 10000, "Reputation out of bounds");
         agents[agent].reputation = newReputation;
         emit ReputationUpdated(agent, newReputation);
     }

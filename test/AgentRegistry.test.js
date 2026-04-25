@@ -43,4 +43,22 @@ describe("AgentRegistry", function () {
     const info = await registry.getAgent(agent1.address);
     expect(info.active).to.be.false;
   });
+
+  it("reverts if already registered", async function () {
+    await registry.connect(agent1).register("cap", { value: ethers.parseEther("0.01") });
+    await expect(
+      registry.connect(agent1).register("cap2", { value: ethers.parseEther("0.01") })
+    ).to.be.revertedWith("Already registered");
+  });
+
+  it("reverts deregister if not registered", async function () {
+    await expect(registry.connect(agent1).deregister()).to.be.revertedWith("Not registered");
+  });
+
+  it("reverts updateReputation from non-owner", async function () {
+    await registry.connect(agent1).register("cap", { value: ethers.parseEther("0.01") });
+    await expect(
+      registry.connect(agent1).updateReputation(agent1.address, 120)
+    ).to.be.revertedWith("Not owner");
+  });
 });

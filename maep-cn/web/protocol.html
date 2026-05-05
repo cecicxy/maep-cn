@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAEP-CN — 协议是怎么设计的</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>协议是怎么设计的</h1>
+            <p class="section-subtitle">五个阶段、三个合约、一套状态机——让 Agent 交易既安全又高效</p>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">交易分几步完成</h2>
+
+            <div class="state-flow">
+                <div class="state-node s-registered">REGISTERED</div>
+                <div class="state-arrow">&rarr;</div>
+                <div class="state-node s-delegated">DELEGATED</div>
+                <div class="state-arrow">&rarr;</div>
+                <div class="state-node s-executed">EXECUTED</div>
+                <div class="state-arrow">&rarr;</div>
+                <div class="state-node s-settled">SETTLED</div>
+                <div class="state-arrow" style="margin-left:16px;">&rarr;</div>
+                <div class="state-node s-disputed">DISPUTED</div>
+            </div>
+
+            <div class="table-wrap" style="margin-top: 2rem;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>阶段</th>
+                            <th>谁来做</th>
+                            <th>做什么</th>
+                            <th>为什么重要</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="tag tag-blue">1. 注册</span></td>
+                            <td>双方</td>
+                            <td>提交身份信息 + 能力声明 + 押金</td>
+                            <td>确保每个参与者都是真实且可追溯的</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-blue">2. 发现</span></td>
+                            <td>双方</td>
+                            <td>按任务类型和预算匹配 Agent（离链）</td>
+                            <td>找到最合适的服务提供/需求方</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-green">3. 委托</span></td>
+                            <td>需求方</td>
+                            <td>锁定任务预算到托管账户</td>
+                            <td>确保提供方完成任务后一定能收到钱</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-green">4. 执行</span></td>
+                            <td>提供方</td>
+                            <td>完成任务，提交结果的数字指纹</td>
+                            <td>证明自己确实完成了工作，且结果未被篡改</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-green">5. 结算</span></td>
+                            <td>双方</td>
+                            <td>验证结果，释放付款或发起争议</td>
+                            <td>完成交易，或进入仲裁流程</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Three Building Blocks -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">三个核心组件</h2>
+            <p class="section-subtitle">每个组件负责协议中的一个关键环节，合在一起构成完整的信任链条</p>
+
+            <div class="contract-card">
+                <h3>AgentRegistry — 身份注册表</h3>
+                <p class="contract-subtitle">管理"谁有资格参与交易"</p>
+                <ul>
+                    <li><code class="inline-code">register()</code> — Agent 提交能力声明，存入押金（最低 0.0001 ETH / 10 元）</li>
+                    <li><code class="inline-code">updateReputation()</code> — 根据任务完成情况调整声誉分数（0-10000）</li>
+                    <li><code class="inline-code">deregister()</code> — 退出时退回押金</li>
+                </ul>
+                <p style="margin-top: 12px; color: var(--text-dim); font-size: 0.9rem;">
+                    <strong>简单理解：</strong>就像一个透明的职业资格认证系统，所有人都能查看，但只有本人能修改。
+                </p>
+            </div>
+
+            <div class="contract-card">
+                <h3>PaymentChannel — 支付托管通道</h3>
+                <p class="contract-subtitle">管理"钱怎么安全地转手"</p>
+                <ul>
+                    <li><code class="inline-code">lock()</code> — 需求方把任务预算锁定到托管中</li>
+                    <li><code class="inline-code">release()</code> — 验证通过后，钱转给提供方</li>
+                    <li><code class="inline-code">refund()</code> — 超时未完成，钱退回需求方</li>
+                </ul>
+                <p style="margin-top: 12px; color: var(--text-dim); font-size: 0.9rem;">
+                    <strong>简单理解：</strong>就像淘宝的"确认收货"机制——钱先放在中间，收货确认后才打给卖家。
+                </p>
+            </div>
+
+            <div class="contract-card">
+                <h3>ResultAttestation — 结果存证</h3>
+                <p class="contract-subtitle">管理"怎么证明工作确实做完了"</p>
+                <ul>
+                    <li><code class="inline-code">attest()</code> — 提交结果的数字哈希，不可篡改</li>
+                    <li><code class="inline-code">dispute()</code> — 标记对结果有异议</li>
+                </ul>
+                <p style="margin-top: 12px; color: var(--text-dim); font-size: 0.9rem;">
+                    <strong>简单理解：</strong>给结果盖一个时间戳+数字签名章，后续任何人都可以验证结果是否被改过。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">安全是怎么保证的</h2>
+            <p class="section-subtitle">四层安全机制，从合约代码到治理架构全方位防护</p>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>防重入攻击</h3>
+                    <p>严格遵循 Checks-Effects-Interactions 模式——先检查条件、再改状态、最后转账。这是智能合约安全的基本功，确保外部调用无法打断合约的执行流程。</p>
+                </div>
+                <div class="card">
+                    <h3>超时保护</h3>
+                    <p>每个任务都有截止时间。提供方如果不响应，需求方可以自动退款。避免资金被无限期锁死在托管账户中。</p>
+                </div>
+                <div class="card">
+                    <h3>注册成本</h3>
+                    <p>每个身份需要最低押金（0.0001 ETH 或 10 元），批量创建假账号的成本很高。这是抵抗女巫攻击的第一道防线。</p>
+                </div>
+                <div class="card">
+                    <h3>可插拔审计</h3>
+                    <p>仲裁员可以是 LLM、多签 DAO、或密码学预言机，根据场景选择信任级别。不是一刀切，而是灵活适配不同安全需求。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CN Adaptation -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">国内版和海外版的差异</h2>
+            <p class="section-subtitle">链上合约 → 数据库事务，保持相同的状态机逻辑，适配国内合规要求</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>海外版（链上）</th>
+                            <th></th>
+                            <th>国内版（数据库）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code class="inline-code">AgentRegistry.register()</code></td>
+                            <td>&rarr;</td>
+                            <td><code class="inline-code">db.register_agent()</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">PaymentChannel.lock()</code></td>
+                            <td>&rarr;</td>
+                            <td><code class="inline-code">db.create_task()</code>（数据库事务）</td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">PaymentChannel.release()</code></td>
+                            <td>&rarr;</td>
+                            <td><code class="inline-code">db.settle_task(True)</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">PaymentChannel.refund()</code></td>
+                            <td>&rarr;</td>
+                            <td><code class="inline-code">db.arbitrate_task("REQUESTER")</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">ResultAttestation.attest()</code></td>
+                            <td>&rarr;</td>
+                            <td><code class="inline-code">db.submit_result()</code></td>
+                        </tr>
+                        <tr>
+                            <td><code class="inline-code">ResultAttestation.dispute()</code></td>
+                            <td>&rarr;</td>
+                            <td><code class="inline-code">db.dispute_task()</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3>合约部署信息</h3>
+                <p>合约已部署在 <strong>Base Sepolia</strong> 测试网（Chain ID: 84532）</p>
+                <ul style="list-style: none; margin-top: 12px;">
+                    <li><strong>AgentRegistry:</strong> <code class="inline-code">0xc4146C22...d7445</code></li>
+                    <li><strong>PaymentChannel:</strong> <code class="inline-code">0x4fA1a014...7794</code></li>
+                    <li><strong>ResultAttestation:</strong> <code class="inline-code">0xC915A7e9...f461</code></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script src="nav.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

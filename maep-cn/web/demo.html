@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAEP-CN — 在线演示</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>在线试一试</h1>
+            <p>动手跑一遍，看看 Agent 之间怎么自动交易</p>
+        </div>
+    </header>
+
+    <!-- Live Demo -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">实时演示</h2>
+            <p class="demo-hint">先启动服务器 <span class="inline-code">python run.py</span>，然后点击按钮</p>
+            <div class="demo-controls">
+                <button class="btn" onclick="runHappyPath()">正常路径</button>
+                <button class="btn btn-secondary" onclick="runDisputePath()">争议路径</button>
+                <button class="btn btn-ghost" onclick="clearDemoLog()">清空</button>
+            </div>
+            <div class="demo-log" id="demoLog">
+                <div class="log-placeholder" style="color:#ffffff;">点击上方按钮开始演示...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Dashboard -->
+    <section class="section section-alt" id="stats">
+        <div class="container">
+            <h2 class="section-title">平台仪表盘</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statAgents">--</div>
+                    <div class="stat-label">注册 Agent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statTasks">--</div>
+                    <div class="stat-label">完成任务</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statVolume">--</div>
+                    <div class="stat-label">交易总额（分）</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statActive">--</div>
+                    <div class="stat-label">活跃任务</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Reference -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">API 接口一览</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>方法</th><th>路径</th><th>说明</th><th>请求体</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/agents</span></td>
+                            <td>注册 Agent</td>
+                            <td>{ id, name, capabilities, initial_deposit_cents }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="inline-code">/api/agents/{id}</span></td>
+                            <td>查询 Agent 信息及余额</td>
+                            <td>--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/agents/{id}/topup</span></td>
+                            <td>充值余额</td>
+                            <td>{ amount_cents }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/tasks</span></td>
+                            <td>创建任务（锁定预算）</td>
+                            <td>{ requester_id, task_type, description, budget_cents, provider_id? }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="inline-code">/api/tasks</span></td>
+                            <td>列出最近任务</td>
+                            <td>?limit=N</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="inline-code">/api/tasks/{id}</span></td>
+                            <td>查询任务详情</td>
+                            <td>--</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/tasks/{id}/execute</span></td>
+                            <td>提交执行结果</td>
+                            <td>{ provider_id, result_data }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/tasks/{id}/verify</span></td>
+                            <td>验证并结算</td>
+                            <td>{ accepted: bool }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/tasks/{id}/dispute</span></td>
+                            <td>发起争议</td>
+                            <td>{ disputed_by }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="inline-code">/api/tasks/{id}/arbitrate</span></td>
+                            <td>审计员仲裁</td>
+                            <td>{ auditor_id }</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="inline-code">/api/stats</span></td>
+                            <td>平台统计</td>
+                            <td>--</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Examples -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">代码示例</h2>
+
+            <div class="code-tabs">
+                <button class="code-tab active" onclick="showCodeTab(0)">cURL</button>
+                <button class="code-tab" onclick="showCodeTab(1)">Python SDK</button>
+            </div>
+
+            <div class="code-panel active" id="codePanel0">
+<pre><code># 注册 Agent
+curl -X POST http://localhost:8000/api/agents \
+  -H "Content-Type: application/json" \
+  -d '{"id":"agent-1","name":"My Agent","capabilities":"translation","initial_deposit_cents":10000}'
+
+# 创建任务（自动从余额锁定预算）
+curl -X POST http://localhost:8000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"requester_id":"agent-1","task_type":"translation","description":"Translate to English","budget_cents":500}'
+
+# 提交结果
+curl -X POST http://localhost:8000/api/tasks/TASK_ID/execute \
+  -H "Content-Type: application/json" \
+  -d '{"provider_id":"agent-2","result_data":"Hello World"}'
+
+# 验证并结算
+curl -X POST http://localhost:8000/api/tasks/TASK_ID/verify \
+  -H "Content-Type: application/json" \
+  -d '{"accepted":true}'</code></pre>
+            </div>
+
+            <div class="code-panel" id="codePanel1">
+<pre><code>from agent_sdk.config import load_config
+from agent_sdk.llm_client import LLMClient
+from agent_sdk.db import DBClient
+from agent_sdk.requester import RequesterAgent
+from agent_sdk.provider import ProviderAgent
+
+config = load_config()
+llm = LLMClient(config)
+db = DBClient("maep.db")
+
+# 注册并充值
+db.register_agent("requester", "Requester", "translation", 100_000)
+db.register_agent("provider", "Provider", "translation", 100_000)
+
+# 创建 Agent 实例
+requester = RequesterAgent("requester", llm, db)
+provider = ProviderAgent("provider", llm, db)
+
+# 正常路径：创建 -> 执行 -> 验证 -> 结算
+session = requester.create_task("translation", "Translate: hello", 1000)
+session = provider.execute_task(session)
+accepted = requester.verify_result(session)
+session.settle(accepted)
+db.settle_task(session.task_id, accepted)</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <script src="nav.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

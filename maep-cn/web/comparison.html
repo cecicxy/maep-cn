@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAEP-CN — 和其他方案比怎么样</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>和其他方案比怎么样</h1>
+            <p>目前市面上有几种 Agent 协作方案，各有侧重</p>
+        </div>
+    </header>
+
+    <!-- Google A2A -->
+    <section class="section">
+        <div class="container">
+            <div class="protocol-card">
+                <h3>Google A2A Protocol <span class="tag tag-blue">通信层</span></h3>
+                <p>2025 年 4 月发布。核心想法：每个 Agent 发布一张"名片"（Agent Card），描述自己会做什么，其他 Agent 看了名片就知道怎么和它协作。</p>
+                <p style="margin-top:12px;">它做了什么：定义了 Agent 之间交换消息的格式规范（Agent Card + JSON-RPC 任务生命周期），让不同框架开发的 Agent 有统一的对话格式。但只是规范，没有提供 Agent 目录、发现或搜索功能。</p>
+
+                <h4 style="margin-top:24px; margin-bottom:8px;">局限性</h4>
+                <div class="limitation">
+                    <p><strong>能力声明无法验证</strong> — 名片上写"我会翻译"，但没人能证明，也没有惩罚虚假声明的机制。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>平台说了算</strong> — Google 平台可以修改、审查或撤销 Agent 的名片，Agent 无法独立证明自己的能力。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>没有支付功能</strong> — 刻意不涉及付款，只是通信协议。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>没有争议处理</strong> — 如果合作出了问题，只能找平台仲裁。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>没有基础设施</strong> — 不提供 Agent 目录、搜索发现、消息路由。你仍然需要自己知道对方 Agent 在哪里、怎么连接。</p>
+                </div>
+
+                <p style="margin-top:16px; color:var(--accent); font-size:0.92rem;"><strong>和 MAEP 的关系：</strong>互补。A2A 定义了消息格式，MAEP 在此基础上添加了身份验证、支付托管和结果存证。</p>
+            </div>
+
+            <!-- Coinbase x402 -->
+            <div class="protocol-card">
+                <h3>Coinbase x402 <span class="tag tag-yellow">支付触发</span></h3>
+                <p>给 HTTP 协议加了 402 状态码："要访问这个 API？先付钱"。客户端准备好链上 USDC 转账后服务器才放行。</p>
+                <p style="margin-top:12px;">它解决的问题：按次付费调用 API。</p>
+
+                <h4 style="margin-top:24px; margin-bottom:8px;">局限性</h4>
+                <div class="limitation">
+                    <p><strong>没有 Agent 身份</strong> — 不知道调用方和被调用方是谁。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>没有结果验证</strong> — 付了钱但不知道服务方返回的东西对不对。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>没有争议机制</strong> — 钱直接转给对方了，出问题没法追回。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>需要信任 3 方</strong> — HTTP 服务器 + 稳定币发行方 + 支付处理方。</p>
+                </div>
+            </div>
+
+            <!-- Fetch.ai -->
+            <div class="protocol-card">
+                <h3>Fetch.ai <span class="tag tag-purple">完整生态</span></h3>
+                <p>基于 Cosmos 的完整 Agent 经济系统，有自己的代币（FET）、验证者网络和应用市场。功能比 MAEP 更完整。</p>
+                <p style="margin-top:12px;">它解决的问题：Agent 经济的全套基础设施。</p>
+
+                <h4 style="margin-top:24px; margin-bottom:8px;">局限性</h4>
+                <div class="limitation">
+                    <p><strong>信任验证者集合</strong> — 使用许可链，验证者数量远少于以太坊，更容易被操控。</p>
+                </div>
+                <div class="limitation">
+                    <p><strong>依赖 Fetch.ai 治理</strong> — 协议升级和争议处理取决于 Fetch.ai 的治理决策。</p>
+                </div>
+            </div>
+
+            <!-- Autonolas -->
+            <div class="protocol-card">
+                <h3>Autonolas (Olas) <span class="tag tag-green">链上服务</span></h3>
+                <p>专注于链上多 Agent 服务编排，有成熟的质押/削减机制。已经上线运行。和 MAEP 的关系：MAEP 关注更简单的双边任务委托，Olas 关注复杂的多步服务编排。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">一张表看清楚</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>能力</th>
+                            <th>x402</th>
+                            <th>Google A2A</th>
+                            <th>Fetch.ai</th>
+                            <th>MAEP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Agent 身份</strong></td>
+                            <td>无</td>
+                            <td>Google 平台管理</td>
+                            <td>链上注册</td>
+                            <td>链上注册</td>
+                        </tr>
+                        <tr>
+                            <td><strong>支付结算</strong></td>
+                            <td>USDC 直付</td>
+                            <td>无</td>
+                            <td>FET 代币</td>
+                            <td>ETH 托管</td>
+                        </tr>
+                        <tr>
+                            <td><strong>结果验证</strong></td>
+                            <td>无</td>
+                            <td>无</td>
+                            <td>网络验证</td>
+                            <td>哈希存证</td>
+                        </tr>
+                        <tr>
+                            <td><strong>争议仲裁</strong></td>
+                            <td>无</td>
+                            <td>平台处理</td>
+                            <td>链上治理</td>
+                            <td>可配置仲裁</td>
+                        </tr>
+                        <tr>
+                            <td><strong>需要信任几方</strong></td>
+                            <td class="num">3</td>
+                            <td class="num">2</td>
+                            <td class="num">2</td>
+                            <td class="num">1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>中国能用吗</strong></td>
+                            <td>不能</td>
+                            <td>能</td>
+                            <td>不能</td>
+                            <td>国内版：能</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Positioning -->
+    <section class="section">
+        <div class="container">
+            <div class="card">
+                <h3>MAEP 的定位</h3>
+                <p>MAEP 不是要替代以上任何一种方案，而是补全它们缺失的<strong class="accent">经济信任层</strong>。A2A 定义了 Agent 之间对话的消息格式，x402 定义了 HTTP 付款触发的接口，MAEP 负责确保"付了钱一定能拿到合格结果"。</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="nav.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

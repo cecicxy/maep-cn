@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAEP-CN — 实验数据</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>实验数据</h1>
+            <p class="section-subtitle">四组实验，用数字说话</p>
+        </div>
+    </div>
+
+    <!-- Experiment 1: Latency -->
+    <section class="section">
+        <div class="container">
+            <div class="exp-block">
+                <h2 class="section-title">实验 1：协议层有多快？</h2>
+                <p class="exp-desc">测量协议状态机本身的执行开销，对比纯 Python 基本操作</p>
+
+                <h3>离链协议开销（微秒）</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>阶段</th>
+                                <th>MAEP 耗时</th>
+                                <th>基本操作耗时</th>
+                                <th>开销倍数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag tag-green">委托</span></td>
+                                <td>1.12 &mu;s</td>
+                                <td>0.23 &mu;s</td>
+                                <td>4.8x</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-green">执行</span></td>
+                                <td>3.32 &mu;s</td>
+                                <td>1.08 &mu;s</td>
+                                <td>3.1x</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag tag-green">结算</span></td>
+                                <td>1.47 &mu;s</td>
+                                <td>0.22 &mu;s</td>
+                                <td>6.8x</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="exp-desc">
+                    <strong>这意味着什么：</strong>协议本身只增加约 1-3 微秒的开销（百万分之一秒），完全不影响实际使用。真正的瓶颈在大模型推理时间。
+                </p>
+
+                <h3 style="margin-top: 2rem;">链上确认延迟（毫秒）</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>阶段</th>
+                                <th>平均耗时</th>
+                                <th>范围</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>注册</td>
+                                <td>11.2 ms</td>
+                                <td>5.1 &ndash; 28.0 ms</td>
+                            </tr>
+                            <tr>
+                                <td>委托</td>
+                                <td>7.8 ms</td>
+                                <td>6.0 &ndash; 12.2 ms</td>
+                            </tr>
+                            <tr>
+                                <td>执行</td>
+                                <td>5.5 ms</td>
+                                <td>4.6 &ndash; 6.1 ms</td>
+                            </tr>
+                            <tr>
+                                <td>结算</td>
+                                <td>6.0 ms</td>
+                                <td>5.5 &ndash; 6.4 ms</td>
+                            </tr>
+                            <tr>
+                                <td><strong>合计</strong></td>
+                                <td><strong>30.5 ms</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="exp-desc">
+                    <strong>这意味着什么：</strong>本地测试网总耗时约 30 毫秒，但在真实的 Base Sepolia 网络上，每个操作大约需要 2 秒（出块时间）。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiment 2: Gas -->
+    <section class="section section-alt">
+        <div class="container">
+            <div class="exp-block">
+                <h2 class="section-title">实验 2：一次任务要花多少钱？</h2>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>阶段</th>
+                                <th>本地测试</th>
+                                <th>Base Sepolia</th>
+                                <th>差异</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>注册</td>
+                                <td>138,625</td>
+                                <td>138,625</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>委托</td>
+                                <td>116,489</td>
+                                <td>116,501</td>
+                                <td>+12</td>
+                            </tr>
+                            <tr>
+                                <td>执行</td>
+                                <td>93,590</td>
+                                <td>93,602</td>
+                                <td>+12</td>
+                            </tr>
+                            <tr>
+                                <td>结算</td>
+                                <td>62,642</td>
+                                <td>60,142</td>
+                                <td>-2,500</td>
+                            </tr>
+                            <tr>
+                                <td><strong>合计</strong></td>
+                                <td><strong>411,346</strong></td>
+                                <td><strong>408,870</strong></td>
+                                <td>~0.6%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="exp-desc">
+                    <strong>这意味着什么：</strong>408,870 Gas &times; 0.006 gwei &asymp; 0.00000245 ETH，按 ETH $3,000 计算约 $0.007/任务（不到 1 分钱）。注册费用可以分摊到多次任务中，实际每次任务成本更低。国内版完全不消耗 Gas。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiment 3: Trust -->
+    <section class="section">
+        <div class="container">
+            <div class="exp-block">
+                <h2 class="section-title">实验 3：你需要信任谁？</h2>
+                <p class="exp-desc">每个协议在哪些环节需要信任第三方？信任的参与方越少，安全性越高。</p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>环节</th>
+                                <th>x402</th>
+                                <th>Google A2A</th>
+                                <th>Fetch.ai</th>
+                                <th>MAEP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Agent 身份</td>
+                                <td>HTTP 服务器</td>
+                                <td>Google 平台</td>
+                                <td>验证者集合</td>
+                                <td>以太坊合约</td>
+                            </tr>
+                            <tr>
+                                <td>支付</td>
+                                <td>稳定币+服务器</td>
+                                <td>无</td>
+                                <td>FET+验证者</td>
+                                <td>以太坊合约</td>
+                            </tr>
+                            <tr>
+                                <td>结果验证</td>
+                                <td>无</td>
+                                <td>无</td>
+                                <td>网络</td>
+                                <td>以太坊合约</td>
+                            </tr>
+                            <tr>
+                                <td>争议仲裁</td>
+                                <td>无</td>
+                                <td>平台</td>
+                                <td>链上治理</td>
+                                <td>可配置</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center;"><strong>需要信任几方</strong></td>
+                                <td style="text-align:center;"><strong>3</strong></td>
+                                <td style="text-align:center;"><strong>2</strong></td>
+                                <td style="text-align:center;"><strong>2</strong></td>
+                                <td style="text-align:center;"><strong>1</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="exp-desc">
+                    <strong>这意味着什么：</strong>MAEP 只需要信任以太坊网络本身（全球 90 万+ 验证者），不依赖任何公司或组织。国内版信任平台运营方——这是用去中心化换合规性的取舍。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiment 4: E2E -->
+    <section class="section section-alt">
+        <div class="container">
+            <div class="exp-block">
+                <h2 class="section-title">实验 4：端到端跑一遍要多久？</h2>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>场景</th>
+                                <th>最终状态</th>
+                                <th>耗时</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>正常路径</td>
+                                <td>已结算</td>
+                                <td>1.84s</td>
+                                <td>三个 Agent 顺利完成一次完整交易</td>
+                            </tr>
+                            <tr>
+                                <td>争议路径</td>
+                                <td>仲裁完成</td>
+                                <td>4.20s</td>
+                                <td>结果被拒绝，审计 Agent 介入仲裁</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="exp-desc">
+                    <strong>这意味着什么：</strong>绝大部分时间花在大模型推理上（生成结果和验证结果），协议本身的开销几乎可以忽略。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CN Benchmark -->
+    <section class="section">
+        <div class="container">
+            <div class="exp-block">
+                <h2 class="section-title">国内版：数据库操作有多快？</h2>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>操作</th>
+                                <th>平均耗时</th>
+                                <th>中位数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>创建任务（锁定余额）</td>
+                                <td>21 &mu;s</td>
+                                <td>20 &mu;s</td>
+                            </tr>
+                            <tr>
+                                <td>提交结果</td>
+                                <td>29 &mu;s</td>
+                                <td>28 &mu;s</td>
+                            </tr>
+                            <tr>
+                                <td>结算付款</td>
+                                <td>26 &mu;s</td>
+                                <td>26 &mu;s</td>
+                            </tr>
+                            <tr>
+                                <td>仲裁</td>
+                                <td>26 &mu;s</td>
+                                <td>26 &mu;s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="exp-desc">
+                    <strong>这意味着什么：</strong>所有操作都在 30 微秒内完成（千分之三十毫秒），比链上操作快约 1000 倍。这就是去掉区块链之后的速度优势。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script src="nav.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

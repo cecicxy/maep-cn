@@ -1,0 +1,7 @@
+maep.db
+maep.db-shm
+maep.db-wal
+__pycache__
+*.pyc
+.env
+tests/

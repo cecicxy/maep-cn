@@ -1,0 +1,11 @@
+{
+  "scenario_a": {
+    "stage": "settled",
+    "duration_s": 1.84
+  },
+  "scenario_b": {
+    "stage": "disputed",
+    "ruling": "PROVIDER",
+    "duration_s": 4.2
+  }
+}

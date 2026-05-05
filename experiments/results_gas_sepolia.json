@@ -1,0 +1,12 @@
+{
+  "network": "base_sepolia",
+  "chain_id": 84532,
+  "gas_price_gwei": 0.006,
+  "gas_per_stage": {
+    "REGISTER": 138625,
+    "DELEGATE": 116501,
+    "EXECUTE": 93602,
+    "SETTLE": 60142
+  },
+  "total_gas": 408870
+}

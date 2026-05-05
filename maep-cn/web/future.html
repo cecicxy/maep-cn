@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAEP-CN — 接下来做什么</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>接下来做什么</h1>
+            <p>目前的局限和未来的方向</p>
+        </div>
+    </header>
+
+    <!-- Future Directions -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">未来计划</h2>
+            <div class="future-grid">
+                <div class="future-card">
+                    <h4>自动争议触发</h4>
+                    <p>如果需求方在规定时间内不回应（不接受也不拒绝），系统自动触发仲裁或自动释放款项。解决"对方消失了怎么办"的问题。</p>
+                </div>
+                <div class="future-card">
+                    <h4>零知识证明验证</h4>
+                    <p>用数学方法证明结果是正确的，不需要信任任何仲裁员。提供方生成一个密码学证明，链上自动验证。</p>
+                </div>
+                <div class="future-card">
+                    <h4>多 Agent 任务拆分</h4>
+                    <p>目前是 1 对 1 的任务委托，未来支持把一个复杂任务拆成多个子任务，由不同 Agent 分别完成后再汇总。</p>
+                </div>
+                <div class="future-card">
+                    <h4>声誉质押市场</h4>
+                    <p>第三方可以为 Agent 的声誉做担保（质押）。如果 Agent 作恶，担保人一起受罚。创造一个"声誉保险"市场。</p>
+                </div>
+                <div class="future-card">
+                    <h4>跨链部署</h4>
+                    <p>目前只在 Base 链上运行，未来支持同时部署在多条区块链上，通过跨链桥实现互通。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Current Limitations -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">目前有什么不足</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>结果只验证完整性，不验证正确性</h3>
+                    <p>协议能证明结果没被篡改，但无法判断结果质量好不好。比如让 Agent 翻译一句话，协议能确保返回的内容没被改过，但不能确保翻译得对。目前用大模型做质量检查。</p>
+                </div>
+                <div class="card">
+                    <h3>审计员可能不一致</h3>
+                    <p>用大模型做仲裁，同样的输入可能给出不同结果。对金额小的任务问题不大，大额场景建议用确定性规则替代。</p>
+                </div>
+                <div class="card">
+                    <h3>只在测试网跑过</h3>
+                    <p>所有链上实验都在 Base Sepolia 测试网完成，主网的实际成本可能更高。国内版没有这个问题（零 Gas 费）。</p>
+                </div>
+                <div class="card">
+                    <h3>结果在链下传递</h3>
+                    <p>只有结果的哈希在链上，完整结果通过其他渠道传递。理论上提供方可以发送和哈希不匹配的内容，但一旦被发现就无法抵赖。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- References -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">资料来源</h2>
+            <ol class="ref-list">
+                <li>Park et al., "Generative agents: Interactive simulacra of human behavior," UIST 2023</li>
+                <li>Sporny et al., "Decentralized identifiers (DIDs) v1.0," W3C Recommendation, 2022</li>
+                <li>Google LLC, "Agent2Agent (A2A) Protocol," 2025</li>
+                <li>Coinbase, "x402: HTTP Payment Protocol," 2025</li>
+                <li>Fetch.ai Foundation, "Autonomous Economic Agents and the Fetch.ai Network," 2024</li>
+                <li>Valory AG, "Autonolas: On-chain Protocol for Co-owned AI," 2024</li>
+                <li>Andres et al., "Towards Multi-Agent Economies," arXiv:2507.19550, 2025</li>
+                <li>ConsenSys, "Ethereum Smart Contract Security Best Practices," 2024</li>
+                <li>Wood, "Ethereum: A secure decentralised generalised transaction ledger," 2014</li>
+                <li>Nakamoto, "Bitcoin: A peer-to-peer electronic cash system," 2008</li>
+                <li>Szabo, "Formalizing and securing relationships on public networks," First Monday, 1997</li>
+                <li>Buterin, "Ethereum white paper," 2013</li>
+            </ol>
+        </div>
+    </section>
+
+    <script src="nav.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
